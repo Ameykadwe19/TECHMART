@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js Backend CI
 
 on:
   push:
@@ -12,13 +12,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install Backend Dependencies
         run: npm install
+        working-directory: ./server
 
-      - name: Run Unit Tests
+      - name: Run Backend Tests
         run: npm run test
+        working-directory: ./server
