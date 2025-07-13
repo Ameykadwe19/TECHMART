@@ -4,6 +4,12 @@ TECHMART is a modern full-stack e-commerce web application built with **React.js
 
 ---
 
+🔗 Live Demo
+🌐 Frontend (Vercel): https://techmart-ruby.vercel.app
+🔌 Backend API (Render): https://techmart-backend-qiib.onrender.com
+
+---
+
 ## 🚀 Tech Stack
 
 | Layer    | Tech Stack                                      |
