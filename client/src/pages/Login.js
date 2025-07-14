@@ -4,28 +4,20 @@ import API from '../utils/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState(null);      // { type: 'success' | 'error', text: string }
+  const [message, setMessage] = useState(null);      
+  const [loading, setLoading] = useState(false);     
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(null); // Clear previous message
+    setMessage(null);
+    setLoading(true); // Start loader
+
     try {
-      console.log('Sending login data:', formData);
       const { data } = await API.post('/auth/login', formData);
-      console.log('Login response:', data);
       localStorage.setItem('token', data.token);
       localStorage.setItem('userRole', data.user?.role || 'user');
-      
-      // Log the token content
-      try {
-        const payload = JSON.parse(atob(data.token.split('.')[1]));
-        console.log('Token payload after login:', payload);
-      } catch (err) {
-        console.error('Error parsing token:', err);
-      }
-      
-      // Show success message
+
       if (data.user?.role === 'admin') {
         setMessage({ type: 'success', text: 'Login successful! Redirecting to admin dashboard...' });
         setTimeout(() => navigate('/admin'), 1500);
@@ -39,6 +31,8 @@ const Login = () => {
         type: 'error', 
         text: `Login failed: ${error.response?.data?.message || 'Invalid credentials'}` 
       });
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
 
@@ -64,7 +58,7 @@ const Login = () => {
             placeholder="Email"
             className="w-full p-3 mb-4 border rounded-lg"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
           <input
@@ -72,14 +66,15 @@ const Login = () => {
             placeholder="Password"
             className="w-full p-3 mb-4 border rounded-lg"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+            disabled={loading}
+            className={`w-full p-3 rounded-lg text-white ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
