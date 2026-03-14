@@ -99,15 +99,7 @@ const Register = () => {
             className="w-full p-3 border rounded-lg"
             required
           />
-            <input
-  type="text"
-  name="name"
-  placeholder="Full Name"
-  value={formData.name}
-  onChange={(e)=>setFormData({...formData,name:e.target.value})}
-  className="w-full p-3 border rounded-lg"
-  required
-/>
+
           <input
             type="email"
             name="email"
