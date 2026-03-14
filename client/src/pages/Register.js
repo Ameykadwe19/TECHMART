@@ -7,7 +7,6 @@ const Register = () => {
   });
 
   const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
-  const [message, setMessage] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +16,6 @@ const Register = () => {
     e.preventDefault();
 
     setMessage(null); // clear old messages
-    setMessage(null);
 
     setLoading(true); // Start spinner
 
