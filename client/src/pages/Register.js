@@ -6,7 +6,7 @@ const Register = () => {
     password: ''
   });
 
-  const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
+  const [message, setMessage] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -14,28 +14,14 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setMessage(null); // clear old messages
-
-    setLoading(true); // Start spinner
+    setMessage(null);
+    setLoading(true);
 
     try {
-      console.log('Sending registration data:', formData);
-
       const { data } = await API.post('/auth/register', formData);
-
-      console.log('Registration response:', data);
 
       if (data.token) {
         localStorage.setItem('token', data.token);
-
-        // Log the token content
-        try {
-          const payload = JSON.parse(atob(data.token.split('.')[1]));
-          console.log('Token payload after registration:', payload);
-        } catch (err) {
-          console.error('Error parsing token:', err);
-        }
 
         setMessage({
           type: 'success',
@@ -43,11 +29,6 @@ const Register = () => {
         });
 
         setTimeout(() => navigate('/login'), 1500);
-      } else {
-        setMessage({
-          type: 'error',
-          text: 'Registration failed: ' + (error.response?.data?.message || error.message)
-        });
       }
 
     } catch (error) {
@@ -56,7 +37,7 @@ const Register = () => {
         text: 'Registration failed: ' + (error.response?.data?.message || error.message)
       });
     } finally {
-      setLoading(false); // Stop spinner
+      setLoading(false);
     }
   };
 
@@ -83,3 +64,5 @@ const Register = () => {
     </form>
   );
 };
+
+export default Register;
