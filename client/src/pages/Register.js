@@ -1,148 +1,114 @@
-
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import API from "../api"; // apna axios instance
-
+```javascript
 const Register = () => {
+
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+    name: '',
+    email: '',
+    password: ''
   });
 
-  const [message, setMessage] = useState(null); 
+  const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
+  const [message, setMessage] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+    setMessage(null); // clear old messages
     setMessage(null);
-    setLoading(true);
+    setLoading(true); // Start spinner
 
     try {
-      console.log("Sending registration data:", formData);
 
-      const { data } = await API.post("/auth/register", formData);
+      console.log('Sending registration data:', formData);
 
-      console.log("Registration response:", data);
+      const { data } = await API.post('/auth/register', formData);
+
+      console.log('Registration response:', data);
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
 
-        // decode token (optional)
+        localStorage.setItem('token', data.token);
+
+        // Log the token content
         try {
-          const payload = JSON.parse(atob(data.token.split(".")[1]));
-          console.log("Token payload:", payload);
+
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          console.log('Token payload after registration:', payload);
+
         } catch (err) {
-          console.error("Token decode error:", err);
+
+          console.error('Error parsing token:', err);
+
         }
 
         setMessage({
-          type: "success",
-          text: "Registration successful! Redirecting to login...",
+          type: 'success',
+          text: 'Registration successful! Redirecting to login page...'
         });
 
-        setTimeout(() => navigate("/login"), 1500);
+        setTimeout(() => navigate('/login'), 1500);
+
       } else {
-        setMessage({
-          type: "error",
-          text: "Registration failed. Please try again.",
-        });
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
 
-      setMessage({
-        type: "error",
-        text:
-          "Registration failed: " +
-          (error.response?.data?.message || error.message),
-      });
+        setMessage({
+          type: 'error',
+          text: 'Registration failed: ' + (error.response?.data?.message || error.message)
+        });
+
+      }
+
     } finally {
-      setLoading(false);
+
+      setLoading(false); // Stop spinner
+
     }
+
   };
 
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Create Account
-        </h2>
 
-        {message && (
-          <div
-            className={`p-3 mb-4 text-center rounded ${
-              message.type === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
+    <form onSubmit={handleSubmit}>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg"
-            required
-          />
+      <input
+        type="password"
+        onChange={(e) =>
+          setFormData({ ...formData, password: e.target.value })
+        }
+        required
+      />
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg"
-            required
-          />
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+      >
+        Register
+      </button>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg"
-            required
-          />
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full p-3 rounded-lg text-white ${
+          loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+        }`}
+      >
+        {loading ? 'Registering...' : 'Register'}
+      </button>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full p-3 rounded-lg text-white ${
-              loading
-                ? "bg-blue-400"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-        </form>
+      <p className="mt-4 text-center">
+        Already have account? 
+        <Link to="/login" className="text-blue-600">
+          Login
+        </Link>
+      </p>
 
-        <p className="mt-4 text-center">
-          Already have account?{" "}
-          <Link to="/login" className="text-blue-600">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
+    </form>
+
   );
-};
 
-export default Register;
+};
 ```
