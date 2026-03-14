@@ -1,4 +1,3 @@
-```javascript
 const Register = () => {
 
   const [formData, setFormData] = useState({
@@ -11,18 +10,18 @@ const Register = () => {
   const [message, setMessage] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
+
     setMessage(null); // clear old messages
     setMessage(null);
+
     setLoading(true); // Start spinner
 
     try {
-
       console.log('Sending registration data:', formData);
 
       const { data } = await API.post('/auth/register', formData);
@@ -30,19 +29,14 @@ const Register = () => {
       console.log('Registration response:', data);
 
       if (data.token) {
-
         localStorage.setItem('token', data.token);
 
         // Log the token content
         try {
-
           const payload = JSON.parse(atob(data.token.split('.')[1]));
           console.log('Token payload after registration:', payload);
-
         } catch (err) {
-
           console.error('Error parsing token:', err);
-
         }
 
         setMessage({
@@ -51,64 +45,43 @@ const Register = () => {
         });
 
         setTimeout(() => navigate('/login'), 1500);
-
       } else {
-
         setMessage({
           type: 'error',
           text: 'Registration failed: ' + (error.response?.data?.message || error.message)
         });
-
       }
 
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: 'Registration failed: ' + (error.response?.data?.message || error.message)
+      });
     } finally {
-
       setLoading(false); // Stop spinner
-
     }
-
   };
 
-
   return (
-
     <form onSubmit={handleSubmit}>
-
       <input
         type="password"
-        onChange={(e) =>
-          setFormData({ ...formData, password: e.target.value })
-        }
+        placeholder="Password"
+        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         required
       />
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
-      >
-        Register
-      </button>
-
-      <button
-        type="submit"
         disabled={loading}
-        className={`w-full p-3 rounded-lg text-white ${
-          loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-        }`}
+        className={`w-full p-3 rounded-lg text-white ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
       >
         {loading ? 'Registering...' : 'Register'}
       </button>
 
       <p className="mt-4 text-center">
-        Already have account? 
-        <Link to="/login" className="text-blue-600">
-          Login
-        </Link>
+        Already have account? <Link to="/login" className="text-blue-600">Login</Link>
       </p>
-
     </form>
-
   );
-
 };
-```
